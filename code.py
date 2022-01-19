@@ -1,3 +1,6 @@
+import json
+import argparse
+
 class Rectangle:
     def __init__(self, x, y, width, height, id):
         self.x1 = x
@@ -5,6 +8,9 @@ class Rectangle:
         self.x2 = x + width
         self.y2 = y + height
         self.id = id
+
+        self.width = width
+        self.height = height
 
 # check the intersect of two rectangles
 def isIntersect(rect1, rect2):
@@ -54,49 +60,75 @@ def findMultipleIntersection(rectangleArr, rect):
 
     return anchorPoints, length
 
-# variable to store all of the possible rectangles
-rectangleArr = []
+def Main(inputRectangle):
+    
+    # variable to store all of the possible rectangles
+    rectangleArr = []
 
-inputRectangle = []
+    print("Intersections:")
 
-inputRectangle.append(Rectangle(100,100,250,80,1))
-inputRectangle.append(Rectangle(120,200,250,150,2))
-inputRectangle.append(Rectangle(140,160,250,100,3))
-inputRectangle.append(Rectangle(160,140,350,190,4))
+    idx = 0
+    for rectangle in inputRectangle:
+        if len(rectangleArr) == 0:
+            rectangleArr.append([rectangle])
+        else:
+            # checking if the new rectangle is intersecting with existing rectangles
+            newRects = []
+            for rectangleCheck in rectangleArr:
+                if isIntersectCombined(rectangleCheck, rectangle):
+                    idx+=1
+                    if len(rectangleCheck) == 1:
+                        print("\t{}: Between rectangle {} and {} ".format(idx, rectangleCheck[0].id, rectangle.id), end= "")
+                        
+                        intersectAnchorPoint, intersectLength = findMultipleIntersection(rectangleCheck, rectangle)
+                        print("at {}, w={}, h={}.".format(intersectAnchorPoint, intersectLength[0], intersectLength[1]))
+                    else:
+                        print("\t{}: Between rectangle ".format(idx), end = "")
+                        for i,r in enumerate(rectangleCheck):
+                            if i == len(rectangleCheck)-1:
+                                print("{}".format(r.id), end = "")
+                            else:
+                                print("{}, ".format(r.id), end = "")
 
-for rectangle in inputRectangle:
-    if len(rectangleArr) == 0:
-        rectangleArr.append([rectangle])
-    else:
-        # checking if the new rectangle is intersecting with existing rectangles
-        newRects = []
-        for rectangleCheck in rectangleArr:
-            if isIntersectCombined(rectangleCheck, rectangle):
-                if len(rectangleCheck) == 1:
-                    print("Between rectangle {} and {} ".format(rectangleCheck[0].id, rectangle.id), end= "")
+                        print(" and {} ".format(rectangle.id), end = "")
+
+                        intersectAnchorPoint, intersectLength = findMultipleIntersection(rectangleCheck, rectangle)
+                        print("at {}, w={}, h={}.".format(intersectAnchorPoint, intersectLength[0], intersectLength[1]))
                     
-                    intersectAnchorPoint, intersectLength = findMultipleIntersection(rectangleCheck, rectangle)
-                    print("at {}, w={}, h={}.".format(intersectAnchorPoint, intersectLength[0], intersectLength[1]))
-                else:
-                    print("Between rectangle ", end = "")
-                    for i,r in enumerate(rectangleCheck):
-                        if i == len(rectangleCheck)-1:
-                            print("{}".format(r.id), end = "")
-                        else:
-                            print("{}, ".format(r.id), end = "")
+                    # deep copy so it doesn't change the rectangleCheck
+                    temp = rectangleCheck.copy()
+                    temp.append(rectangle)
+                    newRects.append(temp)
 
-                    print(" and {} ".format(rectangle.id), end = "")
+            # append the rectangle into the rectangleArr
+            rectangleArr.append([rectangle])
 
-                    intersectAnchorPoint, intersectLength = findMultipleIntersection(rectangleCheck, rectangle)
-                    print("at {}, w={}, h={}.".format(intersectAnchorPoint, intersectLength[0], intersectLength[1]))
-                
-                # deep copy so it doesn't change the rectangleCheck
-                temp = rectangleCheck.copy()
-                temp.append(rectangle)
-                newRects.append(temp)
+            for nr in newRects:
+                rectangleArr.append(nr)
 
-        # append the rectangle into the rectangleArr
-        rectangleArr.append([rectangle])
+def rectanglePreview(inputRectangle):
+    print("Input:")
+    for rect in inputRectangle:
+        print("\t{}: Rectangle at ({},{}), w={}, h={}".format(rect.id, rect.x1, rect.y1, rect.width, rect.height))
 
-        for nr in newRects:
-            rectangleArr.append(nr)
+if __name__ == "__main__":
+
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument(dest="jsonfileinput", type=str, help="Json input filename")
+    args = parser.parse_args()
+    
+    jsonfileinput = args.jsonfileinput
+    f = open(jsonfileinput)
+    data = json.load(f)
+    f.close()
+
+    inputRectangle = []
+
+    id = 0
+    for rect in data["rects"]:
+        id+=1
+        inputRectangle.append(Rectangle(rect["x"], rect["y"], rect["w"], rect["h"], id))
+
+    rectanglePreview(inputRectangle)
+    Main(inputRectangle)
