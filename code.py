@@ -125,10 +125,13 @@ if __name__ == "__main__":
 
     inputRectangle = []
 
-    id = 0
-    for rect in data["rects"]:
-        id+=1
-        inputRectangle.append(Rectangle(rect["x"], rect["y"], rect["w"], rect["h"], id))
+    try:
+        id = 0
+        for rect in data["rects"]:
+            id+=1
+            inputRectangle.append(Rectangle(rect["x"], rect["y"], rect["w"], rect["h"], id))
 
-    rectanglePreview(inputRectangle)
-    Main(inputRectangle)
+        rectanglePreview(inputRectangle)
+        Main(inputRectangle)
+    except:
+        print("An error occured")

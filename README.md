@@ -12,3 +12,4 @@
         .
     ]
 }
+- See the input example in input.json
