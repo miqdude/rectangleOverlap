@@ -37,6 +37,24 @@ def findTwoIntersection(rectArr, rect):
 
     return anchorPoints, length
 
+def findMultipleIntersection(rectangleArr, rect):
+    x1s = []
+    y1s = []
+
+    for r in rectangleArr:
+        x1s.append(r.x1)
+        y1s.append(r.y1)
+
+    x1s.append(rect.x1)
+    y1s.append(rect.y1)
+
+    # print(x1s)
+    # print(y1s)
+
+    anchorPoints = (max(x1s), max(y1s))
+
+    return anchorPoints
+
 # variable to store all of the possible rectangles
 rectangleArr = []
 
@@ -68,7 +86,10 @@ for rectangle in inputRectangle:
                         else:
                             print("{}, ".format(r.id), end = "")
 
-                    print(" and {}".format(rectangle.id))
+                    print(" and {} ".format(rectangle.id), end = "")
+
+                    intersectAnchorPoint = findMultipleIntersection(rectangleCheck, rectangle)
+                    print("at {}".format(intersectAnchorPoint))
                 
                 # deep copy so it doesn't change the rectangleCheck
                 temp = rectangleCheck.copy()
