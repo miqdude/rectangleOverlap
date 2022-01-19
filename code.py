@@ -27,6 +27,16 @@ def isIntersectCombined(rectArr, rect):
 
     return True
 
+def findTwoIntersection(rectArr, rect):
+    rect1 = rectArr[0]
+
+    anchorPoints = (max(rect1.x1, rect.x1), max(rect1.y1, rect.y1))
+    farPoints = (min(rect1.x2, rect.x2), min(rect1.y2, rect.y2))
+
+    length = (farPoints[0] - anchorPoints[0], farPoints[1] - anchorPoints[1])
+
+    return anchorPoints, length
+
 # variable to store all of the possible rectangles
 rectangleArr = []
 
@@ -46,7 +56,10 @@ for rectangle in inputRectangle:
         for rectangleCheck in rectangleArr:
             if isIntersectCombined(rectangleCheck, rectangle):
                 if len(rectangleCheck) == 1:
-                    print("Between rectangle {} and {}".format(rectangleCheck[0].id, rectangle.id))
+                    print("Between rectangle {} and {} ".format(rectangleCheck[0].id, rectangle.id), end= "")
+                    
+                    intersectAnchorPoint, intersectLength = findTwoIntersection(rectangleCheck, rectangle)
+                    print("at {}, w={}, h={}.".format(intersectAnchorPoint, intersectLength[0], intersectLength[1]))
                 else:
                     print("Between rectangle ", end = "")
                     for i,r in enumerate(rectangleCheck):
