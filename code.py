@@ -27,16 +27,6 @@ def isIntersectCombined(rectArr, rect):
 
     return True
 
-def findTwoIntersection(rectArr, rect):
-    rect1 = rectArr[0]
-
-    anchorPoints = (max(rect1.x1, rect.x1), max(rect1.y1, rect.y1))
-    farPoints = (min(rect1.x2, rect.x2), min(rect1.y2, rect.y2))
-
-    length = (farPoints[0] - anchorPoints[0], farPoints[1] - anchorPoints[1])
-
-    return anchorPoints, length
-
 def findMultipleIntersection(rectangleArr, rect):
     x1s = []
     y1s = []
