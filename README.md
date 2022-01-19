@@ -1,7 +1,7 @@
 # Rectangle Overlapping Problem in Python
 
 ## How to use the program
-- Use command Python code.py <your_input_JSON_file>
+- Use command python code.py <your_input_JSON_file>
 - Make sure your input JSON format is as following
 {
     "rects": [
